@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, JetBrains_Mono, Courier_Prime } from "next/font/google";
+import { AuthProvider } from "@/components/auth-provider";
 import "./globals.css";
 
 const pressStart2P = Press_Start_2P({
@@ -34,7 +35,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <div className="av-bg" aria-hidden="true" />
         <div className="av-noise" aria-hidden="true" />
-        <div id="root">{children}</div>
+        <div id="root">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );
