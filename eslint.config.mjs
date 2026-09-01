@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static prototype reference files (unbundled global-React JSX,
+    // not part of the Next app — see specs/01-mvp-pantallas-visuales.md).
+    "references/**",
   ]),
 ]);
 
