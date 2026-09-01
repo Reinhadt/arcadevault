@@ -4,8 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
+  useMemo,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -23,42 +23,53 @@ const STORAGE_KEY = "av_user";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+type Listener = () => void;
+const listeners = new Set<Listener>();
+
+function readUser(): SessionUser | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function getServerSnapshot(): SessionUser | null {
+  return null;
+}
+
+function writeUser(user: SessionUser | null) {
+  try {
+    if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    else localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // localStorage unavailable — session still works in-memory for this tab
+  }
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: Listener) {
+  listeners.add(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<SessionUser | null>(null);
+  const user = useSyncExternalStore(subscribe, readUser, getServerSnapshot);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setUser(JSON.parse(stored));
-    } catch {
-      // localStorage unavailable or corrupted — keep default (no session)
-    }
-  }, []);
+  const signIn = useCallback((next: SessionUser | null) => writeUser(next), []);
+  const signOut = useCallback(() => writeUser(null), []);
 
-  const signIn = useCallback((next: SessionUser | null) => {
-    setUser(next);
-    try {
-      if (next) localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      else localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // localStorage unavailable — session still works in-memory
-    }
-  }, []);
-
-  const signOut = useCallback(() => {
-    setUser(null);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // localStorage unavailable — nothing to clean up
-    }
-  }, []);
-
-  return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, signIn, signOut }),
+    [user, signIn, signOut],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {
