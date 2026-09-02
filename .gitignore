@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+.playwright-screenshots/*
+!.playwright-screenshots/.gitkeep
+
+.playwright-mcp/*
+!.playwright-mcp/.gitkeep
 
 # next.js
 /.next/
