@@ -26,13 +26,24 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 type Listener = () => void;
 const listeners = new Set<Listener>();
 
+let cachedRaw: string | null | undefined;
+let cachedUser: SessionUser | null = null;
+
 function readUser(): SessionUser | null {
+  let raw: string | null;
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
+    raw = localStorage.getItem(STORAGE_KEY);
   } catch {
-    return null;
+    raw = null;
   }
+  if (raw === cachedRaw) return cachedUser;
+  cachedRaw = raw;
+  try {
+    cachedUser = raw ? JSON.parse(raw) : null;
+  } catch {
+    cachedUser = null;
+  }
+  return cachedUser;
 }
 
 function getServerSnapshot(): SessionUser | null {
