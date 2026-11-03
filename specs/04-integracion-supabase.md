@@ -1,6 +1,6 @@
 # 04 — Integración base con Supabase
 
-**Estado:** Approved
+**Estado:** Implemented
 **Depende de:** Ninguna (sigue la convención de variables de entorno documentadas en `.env.local.example` introducida en SPEC 03)
 **Fecha:** 2026-10-27
 
