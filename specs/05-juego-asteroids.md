@@ -1,6 +1,6 @@
 # 05 — Juego Asteroids jugable en Next.js
 
-**Estado:** Approved
+**Estado:** Implemented
 **Depende de:** SPEC 01, SPEC 02
 **Fecha:** 2026-11-02
 
