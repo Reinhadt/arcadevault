@@ -17,6 +17,46 @@ const INITIAL_SNAPSHOT: AsteroidsSnapshot = {
 
 type ButtonClick = React.MouseEvent<HTMLButtonElement>;
 
+const TOUCH_BUTTONS = [
+  { code: "ArrowLeft", label: "◀", aria: "Girar a la izquierda", cls: "" },
+  { code: "ArrowRight", label: "▶", aria: "Girar a la derecha", cls: "" },
+  { code: "ArrowUp", label: "▲", aria: "Propulsar", cls: "" },
+  { code: "Space", label: "DISPARAR", aria: "Disparar", cls: " fire" },
+];
+
+// Holding a button holds the virtual key; every way a pointer can end releases it.
+function TouchControls({
+  onKey,
+}: {
+  onKey: (code: string, down: boolean) => void;
+}) {
+  return (
+    <div className="touch-controls">
+      {TOUCH_BUTTONS.map(({ code, label, aria, cls }) => {
+        const release = () => onKey(code, false);
+        return (
+          <button
+            key={code}
+            type="button"
+            className={`btn touch-btn${cls}`}
+            aria-label={aria}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              onKey(code, true);
+            }}
+            onPointerUp={release}
+            onPointerCancel={release}
+            onPointerLeave={release}
+            onContextMenu={(e) => e.preventDefault()}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function GamePlayer({ game }: { game: Game }) {
   const isAsteroids = game.id === "asteroids";
   const gameRef = useRef<AsteroidsGameHandle>(null);
@@ -40,6 +80,8 @@ export default function GamePlayer({ game }: { game: Game }) {
     e.currentTarget.blur();
     gameRef.current?.restart();
   };
+  const handleKey = (code: string, down: boolean) =>
+    gameRef.current?.setKey(code, down);
 
   return (
     <div className="av-player fade-in">
@@ -140,6 +182,7 @@ export default function GamePlayer({ game }: { game: Game }) {
           <span>{game.title} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+        {isAsteroids && <TouchControls onKey={handleKey} />}
       </div>
     </div>
   );

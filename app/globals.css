@@ -725,6 +725,42 @@ a { color: inherit; text-decoration: none; }
   background: var(--green); box-shadow: 0 0 6px var(--green);
 }
 
+/* on-screen game controls: hidden unless the device is touch-first or the screen is narrow */
+.touch-controls {
+  display: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 2fr);
+  gap: 10px;
+  margin-top: 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media (pointer: coarse), (max-width: 700px) {
+  .touch-controls { display: grid; }
+}
+.touch-btn {
+  min-height: 64px;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 18px;
+  line-height: 1;
+  touch-action: none;
+}
+.touch-btn.fire {
+  font-family: var(--pixel);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  border-color: var(--magenta);
+}
+.touch-btn:active {
+  color: var(--cyan);
+  box-shadow: 0 0 14px rgba(0,245,255,0.55), inset 0 0 8px rgba(0,245,255,0.35);
+}
+.touch-btn.fire:active {
+  color: var(--magenta);
+  box-shadow: 0 0 14px rgba(255,0,110,0.55), inset 0 0 8px rgba(255,0,110,0.35);
+}
+
 /* fake in-screen game */
 .game-arena {
   position: absolute; inset: 0;

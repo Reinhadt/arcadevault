@@ -11,6 +11,7 @@ export interface AsteroidsGameHandle {
   togglePause: () => void;
   endGame: () => void;
   restart: () => void;
+  setKey: (code: string, down: boolean) => void;
 }
 
 interface AsteroidsGameProps {
@@ -34,6 +35,7 @@ export default function AsteroidsGame({ onChange, ref }: AsteroidsGameProps) {
     togglePause: () => engineRef.current?.togglePause(),
     endGame: () => engineRef.current?.endGame(),
     restart: () => engineRef.current?.restart(),
+    setKey: (code, down) => engineRef.current?.setKey(code, down),
   }));
 
   useEffect(() => {
