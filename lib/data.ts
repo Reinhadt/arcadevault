@@ -108,6 +108,17 @@ export const GAMES: Game[] = [
     best: 24,
     plays: "4.2K",
   },
+  {
+    id: "asteroids",
+    title: "ASTEROIDS",
+    short: "Rompe asteroides antes de que te rompan a ti.",
+    long: "Pilota una nave en un espacio sin bordes: gira, propulsa y dispara. Cada asteroide se parte en fragmentos más pequeños y rápidos. Tienes 3 vidas, con invencibilidad breve al reaparecer, y un power-up de disparo triple que te da ventaja unos segundos.",
+    cat: "SHOOTER",
+    cover: "cover-asteroids",
+    color: "cyan",
+    best: 36750,
+    plays: "8.7K",
+  },
 ];
 
 export const CATS = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"] as const;
